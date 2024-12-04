@@ -1,12 +1,15 @@
 module guitar_hero_display (
     input wire clk,
     input wire rst,
+	 input wire start,
     output wire hsync,
     output wire vsync,
     output reg [23:0] rgb,
     output wire [9:0] h_count,
     output wire [9:0] v_count
 );
+
+wire note_visible;
 
 // Instantiate the VGA driver
 vga_driver vga_inst (
@@ -18,6 +21,15 @@ vga_driver vga_inst (
         .v_count(v_count)
 );
 
+// Instantiate the note generator
+note_generator note_inst (
+        .clk(clk),
+        .rst(rst),
+        .h_count(h_count),
+        .v_count(v_count),
+        .note_visible(note_visible)
+);
+
 always @(posedge clk or posedge rst) begin
     if (rst) begin
 	 
@@ -25,7 +37,11 @@ always @(posedge clk or posedge rst) begin
 		  
     end else if ((h_count < 640) && (v_count < 480)) begin
 	 
-        if (v_count >= 380 && v_count < 384) begin
+		  if (note_visible) begin
+				
+				rgb <= 24'hFF0000; //Red Note
+	 
+        end else if (v_count >= 380 && v_count < 384) begin
 		  
             rgb <= 24'h000000; // Window for notes (horizontal black line)
 				
