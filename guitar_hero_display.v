@@ -8,51 +8,61 @@ module guitar_hero_display (
     output wire [9:0] v_count
 );
 
-    // Instantiate the VGA driver
-    vga_driver vga_inst (
+// Instantiate the VGA driver
+vga_driver vga_inst (
         .clk(clk),
         .rst(rst),
         .hsync(hsync),
         .vsync(vsync),
         .h_count(h_count),
         .v_count(v_count)
-    );
+);
 
-    // Generate white screen
-    always @(posedge clk or posedge rst) begin
-        if (rst) begin
-            rgb <= 24'h0000000; // Black during reset
-				
-				
-        end else if ((h_count < 4) && (v_count < 480)) begin
-            rgb <= 24'h0000000; // Left side of the screen (Black)
-        
-		  end else if ((h_count < 212) && (h_count > 4) &&(v_count < 480)) begin
-				rgb <= 24'h00D5FF; // First note column (Blue)
-				
-		  end else if ((h_count < 217) && (h_count > 212) && (v_count < 480)) begin
+always @(posedge clk or posedge rst) begin
+    if (rst) begin
+	 
+        rgb <= 24'h000000; // Black during reset
 		  
-				rgb <= 24'h0000000; // Black spacing (Black)
+    end else if ((h_count < 640) && (v_count < 480)) begin
+	 
+        if (v_count >= 380 && v_count < 384) begin
 		  
-		  end else if ((h_count < 424) && (h_count > 217) && (v_count < 480)) begin
-		  
-				rgb <= 24'hFF8900; //Second note column (orange)
-		
-		  end else if ((h_count < 428) && (h_count > 424) && (v_count < 480)) begin
+            rgb <= 24'h000000; // Window for notes (horizontal black line)
 				
-				rgb <= 24'h0000000; // (Black)
+        end else if (h_count < 4) begin
+		  
+            rgb <= 24'h000000; // Left side of the screen (Black)
 				
-		  end else if ((h_count < 636) && (h_count > 428) && (v_count < 480)) begin
+        end else if (h_count < 212) begin
+		  
+            rgb <= 24'hFFFFFF; // First note column
 				
-				rgb <= 24'h00D5FF; // third note column (blue)
+        end else if (h_count < 217) begin
 		  
-		  end else if ((h_count < 640) && (h_count > 636) & (v_count < 480)) begin
+            rgb <= 24'h000000; // Black spacing
+				
+        end else if (h_count < 424) begin
 		  
-				rgb <= 24'h0000000; // (black)
+            rgb <= 24'hFFFFFF; // Second note column 
+				
+        end else if (h_count < 428) begin
 		  
-		  end else begin
-            rgb <= 24'h0000000; //  outside the active area
+            rgb <= 24'h000000; // Black spacing
+				
+        end else if (h_count < 636) begin
+		  
+            rgb <= 24'hFFFFFF; // Third note column 
+				
+        end else begin
+		  
+            rgb <= 24'h000000; // Right side of the screen (Black)
         end
+		  
+    end else begin
+	 
+        rgb <= 24'h000000; // Outside the active area
     end
+end
+
 
 endmodule
