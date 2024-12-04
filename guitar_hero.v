@@ -123,6 +123,7 @@ guitar_hero_display display_inst (
     .clk(clk_25),
     .rst(rst),
     .start(SW[9]),
+	 .speed_select(SW[3:1]),
     .hsync(VGA_HS),
     .vsync(VGA_VS),
     .rgb(rgb),
