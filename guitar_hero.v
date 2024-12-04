@@ -73,11 +73,11 @@ module guitar_hero (
 
 	//////////// VGA //////////
 	output		          		VGA_BLANK_N,
-	output		     [3:0]		VGA_B,
+	output		     [7:0]		VGA_B,
 	output		          		VGA_CLK,
-	output		     [3:0]		VGA_G,
+	output		     [7:0]		VGA_G,
 	output		          		VGA_HS,
-	output		     [3:0]		VGA_R,
+	output		     [7:0]		VGA_R,
 	output		          		VGA_SYNC_N,
 	output		          		VGA_VS
 
@@ -100,9 +100,6 @@ reg clk_25;
 wire rst;
 assign rst = ~KEY[3];
 
-wire start;
-assign start = ~KEY[0];
-
 
 assign VGA_CLK = clk_25;
 assign VGA_BLANK_N = display_area;
@@ -119,18 +116,20 @@ always @(posedge clk_50 or posedge rst) begin
     end
 end
 
-wire [11:0] rgb;
+wire [23:0] rgb;
 assign {VGA_R, VGA_G, VGA_B} = rgb;
 
 guitar_hero_display display_inst (
     .clk(clk_25),
     .rst(rst),
+    .start(SW[9]),
     .hsync(VGA_HS),
     .vsync(VGA_VS),
     .rgb(rgb),
     .h_count(h_count),
     .v_count(v_count)
 );
+
 
 
 endmodule
