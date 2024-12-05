@@ -1,4 +1,4 @@
-module debounce_switches(
+module debounce(
 input clk,
 input rst,
 input [17:0]SW, 
