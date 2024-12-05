@@ -9,32 +9,54 @@ module note_manager(
     output reg note_active
 );
 
-    parameter SPAWN_THRESHOLD = 16'h8000;  // Adjust this to control note frequency
+    parameter SPAWN_THRESHOLD = 16'h8000;  // Adjust this to control how often notes are displayed.
     
-    reg [19:0] counter;
+    reg [19:0] counter; //Used to begin to control the speed.
     
     always @(posedge clk or posedge rst) begin
+	 
         if (rst) begin
+		  
             active_column <= 2'b00;
+				
             note_y_position <= 0;
+				
             note_active <= 0;
+				
             counter <= 0;
+				
         end else if (start) begin
-            if (counter >= speed) begin 
+		  
+            if (counter >= speed) begin
+				
                 counter <= 0;
+					 
                 if (note_active) begin
+					 
                     if (note_y_position >= 480) begin
+						  
                         note_active <= 0;
+								
                     end else begin
+						  
                         note_y_position <= note_y_position + 1;
+								
                     end
+						  
                 end else if (rand > SPAWN_THRESHOLD) begin
+					 
                     note_active <= 1;
+						  
                     note_y_position <= 0;
-                    active_column <= rand[1:0];  // Randomly select a column
+						  
+                    active_column <= rand[1:0];  // Randomly selects a column
+						  
                 end
+					 
             end else begin
+				
                 counter <= counter + 1;
+					 
             end
         end
     end
