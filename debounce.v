@@ -1,10 +1,12 @@
-module debounce_switches(
+module debounce_swtiches(
 input clk,
 input rst,
 input [17:0]SW, 
 output [17:0]SW_db
 );
 
+
+//Debounce all switches for future use in necessary
 debounce db0(clk, rst, SW[0], SW_db[0]);
 debounce db1(clk, rst, SW[1], SW_db[1]);
 debounce db2(clk, rst, SW[2], SW_db[2]);
@@ -26,6 +28,7 @@ debounce db19(clk, rst, SW[17], SW_db[17]);
 
 endmodule
 
+//Top debounce module
 module debounce (
 input clk,
 input rst,
