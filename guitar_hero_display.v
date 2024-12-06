@@ -11,7 +11,9 @@ module guitar_hero_display (
     output wire [9:0] v_count,
 	 output reg [15:0] score,
 	 input wire note_hit,
-	 output reg note_hit_out
+	 output reg note_hit_out,
+	 output wire game_over,
+	 output reg game_active
 );
 
 //Other Necessary wires and assignments
@@ -37,6 +39,10 @@ assign in_good_zone = (note_y_position >= 350 && note_y_position < 410);
 
 assign button_press = ~KEY & ~last_button_state;
 
+ wire note_manager_game_over;
+ 
+ assign game_over = note_manager_game_over;
+
 
 //Game and scoring logic
 
@@ -48,6 +54,12 @@ parameter COOLDOWN_PERIOD = 20'd500000;
         score <= 16'd0;
         cooldown_counter <= 20'd0;
 		  note_hit_out <= 0;
+		  game_active <= 1'b1;
+	 
+	 end else if (game_over) begin
+	 
+		  game_active <= 1'b0;
+		  
     end else begin
         last_button_state <= KEY;
         
@@ -100,7 +112,8 @@ end
         .active_column(active_column),
         .note_y_position(note_y_position),
         .note_active(note_active),
-		  .note_hit(note_hit)
+		  .note_hit(note_hit),
+		  .game_over(note_manager_game_over)
     );
 
     // Instantiate the note generators
