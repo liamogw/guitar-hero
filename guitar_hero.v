@@ -135,6 +135,7 @@ always @(posedge clk_50 or posedge rst) begin
     end
 end
 
+//Concatinated rgb value
 wire [23:0] rgb;
 assign {VGA_R, VGA_G, VGA_B} = rgb;
 
