@@ -25,7 +25,7 @@ wire note_active;
 wire note_visible_1, note_visible_2, note_visible_3;
 wire [2:0] button_press;
 reg [2:0] last_button_state;
-wire in_perfect_zone, in_good_zone; 
+wire in_perfect_zone, in_good_zone, in_bad_zone; 
 reg [19:0] cooldown_counter;
 
 
@@ -35,7 +35,10 @@ assign speed = (speed_select == 3'b000) ? 20'h8FFFF :
                 20'h1FFFF;  // Default to fastest speed
 					 
 assign in_perfect_zone = (note_y_position >= 370 && note_y_position < 390);
+
 assign in_good_zone = (note_y_position >= 350 && note_y_position < 410);
+
+assign in_bad_zone = (note_y_position <= 200);
 
 assign button_press = ~KEY & ~last_button_state;
 
@@ -76,6 +79,10 @@ parameter COOLDOWN_PERIOD = 20'd500000;
                         score <= score + 16'd1;   // Good hit
 								note_hit_out <= 1;
                         cooldown_counter <= COOLDOWN_PERIOD;
+						  end else if (in_bad_zone) begin
+								score <= score - 16'd1;
+								note_hit_out <= 1;
+								cooldown_counter <= COOLDOWN_PERIOD;
                     end
                 end
             end
