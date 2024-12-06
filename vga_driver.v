@@ -7,8 +7,8 @@ module vga_driver (
     output reg [9:0] v_count
 );
 
-// VGA parameters for 640 x 480 @ 60Hz
-// Timing from VESA standard
+    // VGA parameters for 640 x 480 @ 60Hz
+    // Timing from VESA standard
     parameter h_active = 640;
     parameter h_front_porch = 16;
     parameter h_sync_pulse = 96;
@@ -21,7 +21,7 @@ module vga_driver (
     parameter v_back_porch = 33;
     parameter v_total_lines = 525;
 
-// Updating horizontal and vertical counters
+    // Updating horizontal and vertical counters
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             h_count <= 0;
@@ -40,7 +40,7 @@ module vga_driver (
         end
     end
 
-// Generating hsync and vsync signals
+    // Generating hsync and vsync signals
     always @(*) begin
         hsync = ~((h_count >= (h_active + h_front_porch)) && (h_count < (h_active + h_front_porch + h_sync_pulse)));
         vsync = ~((v_count >= (v_active + v_front_porch)) && (v_count < (v_active + v_front_porch + v_sync_pulse)));
