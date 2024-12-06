@@ -7,12 +7,12 @@ module guitar_hero (
 	//output		          		ADC_SCLK,
 
 	//////////// Audio //////////
-	//input 		          		AUD_ADCDAT,
-	//inout 		          		AUD_ADCLRCK,
-	//inout 		          		AUD_BCLK,
-	//output		          		AUD_DACDAT,
-	//inout 		          		AUD_DACLRCK,
-	//output		          		AUD_XCK,
+	input 		          		AUD_ADCDAT,
+	inout 		          		AUD_ADCLRCK,
+	inout 		          		AUD_BCLK,
+	output		          		AUD_DACDAT,
+	inout 		          		AUD_DACLRCK,
+	output		          		AUD_XCK,
 
 	//////////// CLOCK //////////
 	//input 		          		CLOCK2_50,
@@ -34,8 +34,8 @@ module guitar_hero (
 	//output		          		DRAM_WE_N,
 
 	//////////// I2C for Audio and Video-In //////////
-	//output		          		FPGA_I2C_SCLK,
-	//inout 		          		FPGA_I2C_SDAT,
+	output		          		FPGA_I2C_SCLK,
+	inout 		          		FPGA_I2C_SDAT,
 
 	//////////// SEG7 //////////
 	output		     [6:0]		HEX0,
@@ -88,36 +88,67 @@ module guitar_hero (
 	//inout 		    [35:0]		GPIO_1
 );
 
+//Other Necessary Wires
+
+wire [15:0] score;
+
 wire [9:0] h_count;
+
 wire [9:0] v_count;
+
 wire display_area;
 
 wire clk_50;
+
 assign clk_50 = CLOCK_50;
 
 reg clk_25;
 
 wire rst;
+
 assign rst = ~KEY[3];
 
 
 assign VGA_CLK = clk_25;
+
 assign VGA_BLANK_N = display_area;
+
 assign VGA_SYNC_N = 1'b0;
 
 assign display_area = (h_count < 640) && (v_count < 480);
 
+wire [6:0] seg7_dig0, seg7_dig1, seg7_dig2, seg7_dig3;
+
+assign HEX0 = seg7_dig0;
+
+assign HEX1 = seg7_dig1;
+
+assign HEX2 = seg7_dig2;
+
+assign HEX3 = seg7_dig3;
+
+wire note_hit;
+
 // Clock divider for 25MHz
 always @(posedge clk_50 or posedge rst) begin
+
     if (rst) begin
+	 
         clk_25 <= 0;
+		  
     end else begin
+	 
         clk_25 <= ~clk_25;
+		  
     end
 end
 
 wire [23:0] rgb;
+
 assign {VGA_R, VGA_G, VGA_B} = rgb;
+
+
+//Display Inst.
 
 guitar_hero_display display_inst (
     .clk(clk_25),
@@ -128,9 +159,34 @@ guitar_hero_display display_inst (
     .vsync(VGA_VS),
     .rgb(rgb),
     .h_count(h_count),
-    .v_count(v_count)
+    .v_count(v_count),
+	 .KEY(KEY[2:0]),
+	 .score(score),
+	 .note_hit(note_hit),
+    .note_hit_out(note_hit)
 );
 
+//Display Inst
 
+four_decimal_vals score_display(
+    .val(score),
+    .seg7_dig0(seg7_dig0),
+    .seg7_dig1(seg7_dig1),
+    .seg7_dig2(seg7_dig2),
+    .seg7_dig3(seg7_dig3)
+);
+
+// Audio controller instantiation
+audio_controller audio_ctrl_inst (
+    .clk(CLOCK_50),
+    .rst(rst),
+    .button_press(~KEY[2:0]),
+    .AUD_XCK(AUD_XCK),
+    .AUD_DACDAT(AUD_DACDAT),
+    .AUD_DACLRCK(AUD_DACLRCK),
+    .AUD_BCLK(AUD_BCLK),
+    .FPGA_I2C_SCLK(FPGA_I2C_SCLK),
+    .FPGA_I2C_SDAT(FPGA_I2C_SDAT)
+);
 
 endmodule
