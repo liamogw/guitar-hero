@@ -91,28 +91,21 @@ module guitar_hero (
 //Other Necessary Wires
 
 wire [15:0] score;
-
 wire [9:0] h_count;
-
 wire [9:0] v_count;
-
 wire display_area;
 
 wire clk_50;
-
 assign clk_50 = CLOCK_50;
 
 reg clk_25;
 
 wire rst;
-
 assign rst = ~KEY[3];
 
 
 assign VGA_CLK = clk_25;
-
 assign VGA_BLANK_N = display_area;
-
 assign VGA_SYNC_N = 1'b0;
 
 assign display_area = (h_count < 640) && (v_count < 480);
@@ -120,31 +113,22 @@ assign display_area = (h_count < 640) && (v_count < 480);
 wire [6:0] seg7_dig0, seg7_dig1, seg7_dig2, seg7_dig3;
 
 assign HEX0 = seg7_dig0;
-
 assign HEX1 = seg7_dig1;
-
 assign HEX2 = seg7_dig2;
-
 assign HEX3 = seg7_dig3;
 
 wire note_hit;
 
 // Clock divider for 25MHz
 always @(posedge clk_50 or posedge rst) begin
-
     if (rst) begin
-	 
         clk_25 <= 0;
-		  
     end else begin
-	 
         clk_25 <= ~clk_25;
-		  
     end
 end
 
 wire [23:0] rgb;
-
 assign {VGA_R, VGA_G, VGA_B} = rgb;
 
 
