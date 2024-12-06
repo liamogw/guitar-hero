@@ -13,9 +13,9 @@ module audio_controller (
     // Audio frequencies for each column
     parameter FREQ_LEFT   = 880;   // A5 note
 	 
-    parameter FREQ_MIDDLE = 1100;  // C6 note
+    parameter FREQ_MIDDLE = 880;  // C6 note
 	 
-    parameter FREQ_RIGHT  = 1320;  // D6 note
+    parameter FREQ_RIGHT  = 880;  // D6 note
 
     // Clock generation
     wire audio_clk;   // 12.288 MHz clock for WM8731
