@@ -42,7 +42,7 @@ module guitar_hero (
 	output		     [6:0]		HEX1,
 	output		     [6:0]		HEX2,
 	output		     [6:0]		HEX3,
-	//output		     [6:0]		HEX4,
+	output		     [6:0]		HEX4,
 	//output		     [6:0]		HEX5,
 
 	//////////// IR //////////
@@ -90,7 +90,7 @@ module guitar_hero (
 
 //Other Necessary Wires
 
-wire [15:0] score;
+wire [16:0] score;
 wire [9:0] h_count;
 wire [9:0] v_count;
 wire display_area;
@@ -110,14 +110,21 @@ assign VGA_SYNC_N = 1'b0;
 
 assign display_area = (h_count < 640) && (v_count < 480);
 
-wire [6:0] seg7_dig0, seg7_dig1, seg7_dig2, seg7_dig3;
+wire [6:0] seg7_dig0, seg7_dig1, seg7_dig2, seg7_dig3, seg7_neg;
 
 assign HEX0 = seg7_dig0;
 assign HEX1 = seg7_dig1;
 assign HEX2 = seg7_dig2;
 assign HEX3 = seg7_dig3;
+assign HEX4 = seg7_neg;
 
 wire note_hit;
+
+wire game_over;
+wire game_active;
+
+
+
 
 // Clock divider for 25MHz
 always @(posedge clk_50 or posedge rst) begin
@@ -147,7 +154,9 @@ guitar_hero_display display_inst (
 	 .KEY(KEY[2:0]),
 	 .score(score),
 	 .note_hit(note_hit),
-    .note_hit_out(note_hit)
+    .note_hit_out(note_hit),
+	 .game_over(game_over),
+	 .game_active(game_active)
 );
 
 //Display Inst
@@ -157,7 +166,8 @@ four_decimal_vals score_display(
     .seg7_dig0(seg7_dig0),
     .seg7_dig1(seg7_dig1),
     .seg7_dig2(seg7_dig2),
-    .seg7_dig3(seg7_dig3)
+    .seg7_dig3(seg7_dig3),
+	 .seg7_neg(seg7_neg)
 );
 
 // Audio controller instantiation
