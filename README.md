@@ -70,6 +70,6 @@ This project successfully implemented all intended features. The additional feat
 
 ## Design Results
 
-The completed design takes _______ logic elements and ____ bits of block memory when optimized in Quartus.
+The completed design takes 754 ALM's, 1435 ALUT's, and 232 logic registers when optimized in Quartus.
 
 
