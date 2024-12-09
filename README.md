@@ -36,6 +36,10 @@ The project consists of several key modules:
 
 - vga_driver.v: Manages VGA output.
 
+## Video of Gameplay
+
+https://youtube.com/shorts/5ARuR3l5q8A?feature=share
+
 ## Playing the game
 
 - Ensure all switches are off initially.
